@@ -18,10 +18,10 @@ class Player {
         return this._room;
     }
 
-    get senses(): Hazard[] {
-        return _.reduce<number, Hazard[]>(this._room.exits,
-            (state, exit) => state.concat(this._cave.rooms[exit].hazards),
-            new Array<Hazard>());
+    get senses(): HazardType[] {
+        return _.reduce<number, HazardType[]>(this._room.exits,
+            (state, exit) => state.concat(_.pluck(this._cave.rooms[exit].hazards, "type")),
+            new Array<HazardType>());
     }
 
     canMoveToRoom(number: number) {
