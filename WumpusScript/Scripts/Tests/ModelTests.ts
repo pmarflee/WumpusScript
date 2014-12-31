@@ -52,4 +52,16 @@ export class PlayerTests extends tsUnit.TestClass {
         room.hazards.push(new Hazards.Bat());
         this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Bat) > -1)
     }
+
+    "Should be able to sense a pit if it is in an adjoining room"() {
+        var room = this._cave.rooms[this._player.room.exits[0]];
+        room.hazards.push(new Hazards.Pit());
+        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Pit) > -1)
+    }
+
+    "Should not be able to sense a pit if it is not in an adjoining room"() {
+        var room = this._cave.rooms[2];
+        room.hazards.push(new Hazards.Pit());
+        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Pit) > -1)
+    }
 }
