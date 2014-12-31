@@ -29,14 +29,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
-    <TypeScriptCompile Include="Scripts\Model\Bat.ts" />
     <TypeScriptCompile Include="Scripts\Model\Cave.ts" />
-    <TypeScriptCompile Include="Scripts\Model\Hazard.ts" />
+    <TypeScriptCompile Include="Scripts\Model\Hazards.ts" />
     <TypeScriptCompile Include="Scripts\Model\HazardType.ts" />
-    <TypeScriptCompile Include="Scripts\Model\Pit.ts" />
     <TypeScriptCompile Include="Scripts\Model\Player.ts" />
     <TypeScriptCompile Include="Scripts\Model\Room.ts" />
-    <TypeScriptCompile Include="Scripts\Model\Wumpus.ts" />
     <TypeScriptCompile Include="Scripts\Tests\ModelTests.ts" />
     <TypeScriptCompile Include="Scripts\Tests\tests.ts" />
     <TypeScriptCompile Include="Scripts\tsUnit\tsUnit.ts" />

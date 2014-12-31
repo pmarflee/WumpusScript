@@ -1,9 +1,7 @@
 ﻿import tsUnit = require("../tsUnit/tsUnit")
 import Cave = require("../Model/Cave")
 import Player = require("../Model/Player")
-import Wumpus = require("../Model/Wumpus")
-import Bat = require("../Model/Bat")
-import HazardType = require("../Model/HazardType")
+import Hazards = require("../Model/Hazards")
 
 export class CaveTests extends tsUnit.TestClass {
     
@@ -33,25 +31,25 @@ export class PlayerTests extends tsUnit.TestClass {
 
     "Should be able to sense the wumpus if it is in an adjoining room"() {
         var room = this._cave.rooms[this._player.room.exits[0]];
-        room.hazards.push(new Wumpus());
-        this.isTrue(this._player.senses.indexOf(HazardType.Wumpus) > -1)
+        room.hazards.push(new Hazards.Wumpus());
+        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Wumpus) > -1)
     }
 
     "Should not be able to sense the wumpus if it is not in an adjoining room"() {
         var room = this._cave.rooms[2];
-        room.hazards.push(new Wumpus());
-        this.isFalse(this._player.senses.indexOf(HazardType.Wumpus) > -1)
+        room.hazards.push(new Hazards.Wumpus());
+        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Wumpus) > -1)
     }
 
     "Should be able to sense a bat if it is in an adjoining room"() {
         var room = this._cave.rooms[this._player.room.exits[0]];
-        room.hazards.push(new Bat());
-        this.isTrue(this._player.senses.indexOf(HazardType.Bat) > -1)
+        room.hazards.push(new Hazards.Bat());
+        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Bat) > -1)
     }
 
     "Should not be able to sense a bat if it is not in an adjoining room"() {
         var room = this._cave.rooms[2];
-        room.hazards.push(new Bat());
-        this.isFalse(this._player.senses.indexOf(HazardType.Bat) > -1)
+        room.hazards.push(new Hazards.Bat());
+        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Bat) > -1)
     }
 }

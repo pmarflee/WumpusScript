@@ -1,17 +1,16 @@
 ﻿/// <reference path="../typings/underscore/underscore.d.ts" />
 
-import Hazard = require("./Hazard")
-import HazardType = require("./HazardType")
+import Hazards = require("./Hazards")
 
 class Room {
     private _number: number;
     private _exits: number[];
-    private _hazards: Hazard[];
+    private _hazards: Hazards.Hazard[];
 
     constructor(number: number, exits: number[]) {
         this._number = number;
         this._exits = exits;
-        this._hazards = new Array<Hazard>();
+        this._hazards = new Array<Hazards.Hazard>();
     }
 
     get number(): number {
@@ -22,7 +21,7 @@ class Room {
         return this._exits;
     }
 
-    get hazards(): Hazard[] {
+    get hazards(): Hazards.Hazard[] {
         return this._hazards;
     }
 
@@ -30,7 +29,7 @@ class Room {
         return this._exits.indexOf(number) > -1;
     }
 
-    containsHazard(type: HazardType) {
+    containsHazard(type: Hazards.HazardType) {
         return _.any(this._hazards, hazard => hazard.type == type);
     }
 }

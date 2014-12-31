@@ -2,8 +2,7 @@
 
 import Cave = require("./Cave")
 import Room = require("./Room")
-import Hazard = require("./Hazard")
-import HazardType = require("./HazardType")
+import Hazards = require("./Hazards")
 
 class Player {
     private _cave: Cave;
@@ -18,10 +17,10 @@ class Player {
         return this._room;
     }
 
-    get senses(): HazardType[] {
-        return _.reduce<number, HazardType[]>(this._room.exits,
+    get senses(): Hazards.HazardType[] {
+        return _.reduce<number, Hazards.HazardType[]>(this._room.exits,
             (state, exit) => state.concat(_.pluck(this._cave.rooms[exit].hazards, "type")),
-            new Array<HazardType>());
+            new Array<Hazards.HazardType>());
     }
 
     canMoveToRoom(number: number) {
