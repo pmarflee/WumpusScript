@@ -27,6 +27,10 @@ class Room {
         return this._hazards.length > 0;
     }
 
+    containsHazardOfType(type: Hazards.HazardType) {
+        return this._hazards.some(hazard => hazard.type == type);
+    }
+
     hasExit(number: number): boolean {
         return this._exits.indexOf(number) > -1;
     }

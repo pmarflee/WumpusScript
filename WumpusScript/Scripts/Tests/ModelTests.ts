@@ -138,4 +138,18 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     "Should not be able to enter a room which is not accessible from their current room"() {
         this.throws(() => this._player.enter(1));
     }
+
+    "Should be killed by entering a room containing a pit"() {
+        this._player.addEncounter(Hazards.HazardType.Pit, this._player.encounterPit);
+        Hazards.Hazard.create(Hazards.HazardType.Pit, this._cave, 1);
+        this._player.enter(1);
+        this.areIdentical(false, this._player.isAlive);
+    }
+
+    "Should not be killed by entering a room not containing a pit"() {
+        this._player.addEncounter(Hazards.HazardType.Pit, this._player.encounterPit);
+        Hazards.Hazard.create(Hazards.HazardType.Pit, this._cave, 2);
+        this._player.enter(1);
+        this.areIdentical(true, this._player.isAlive);
+    }
 }

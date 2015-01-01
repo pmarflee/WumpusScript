@@ -7,6 +7,8 @@ import Hazards = require("./Hazards")
 class Player {
     private _cave: Cave;
     private _room: Room;
+    private _isAlive: boolean = true;
+    private _encounters: [Hazards.HazardType, { (): void; }][] = new Array <[Hazards.HazardType, { (): void; }]>();
 
     constructor(cave: Cave, roomNumber: number) {
         this._cave = cave;
@@ -23,6 +25,14 @@ class Player {
             new Array<Hazards.HazardType>());
     }
 
+    get isAlive(): boolean {
+        return this._isAlive;
+    }
+
+    addEncounter(type: Hazards.HazardType, action: { (): void }) {
+        this._encounters.push([type, action]);
+    }
+
     canEnter(roomNumber: number) {
         return this._room.exits.indexOf(roomNumber) > -1;
     }
@@ -32,6 +42,14 @@ class Player {
             throw new RangeError("Cannot enter this room. Rooms accessible are " + this.room.exits.join(","));
         }
         this._room = this._cave.rooms[roomNumber];
+
+        this._encounters
+            .filter(encounter => this._room.containsHazardOfType(encounter[0]))
+            .forEach(encounter => encounter[1].call(this));
+    }
+
+    encounterPit() {
+        this._isAlive = false;
     }
 }
 
