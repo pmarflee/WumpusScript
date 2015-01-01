@@ -32,6 +32,14 @@ class Room {
     containsHazard(type: Hazards.HazardType) {
         return _.any(this._hazards, hazard => hazard.type == type);
     }
+
+    addHazard(hazard: Hazards.Hazard) {
+        this._hazards.push(hazard);
+    }
+
+    removeHazard(hazard: Hazards.Hazard) {
+        this._hazards.splice(this._hazards.indexOf(hazard), 1);
+    }
 }
 
 export = Room

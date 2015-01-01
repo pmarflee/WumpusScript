@@ -8,9 +8,9 @@ class Player {
     private _cave: Cave;
     private _room: Room;
 
-    constructor(cave: Cave, room: Room) {
+    constructor(cave: Cave, roomNumber: number) {
         this._cave = cave;
-        this._room = room;
+        this._room = cave.rooms[roomNumber];
     }
 
     get room(): Room {
