@@ -29,8 +29,14 @@ class Cave {
             new Array<Hazards.Hazard>());
     }
 
-    addHazard(type: Hazards.HazardType) {
+    private addHazard(type: Hazards.HazardType) {
         Hazards.Hazard.create(type, this, Random.between(0, this.rooms.length - 1));
+    }
+
+    addHazards(type: Hazards.HazardType, number: number) {
+        for (var i = 1; i <= number; i++) {
+            this.addHazard(type);
+        }
     }
 
     private getRandomRoomNumber() {

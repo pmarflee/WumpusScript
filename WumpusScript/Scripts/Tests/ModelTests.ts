@@ -20,11 +20,31 @@ export class CaveTests extends tsUnit.TestClass {
     "All rooms should have 3 exits"() {
         this.isTrue(this._cave.rooms.every(room => room.exits.length == 3));
     }
+}
 
-    "addHazard should add a hazard to the cave"() {
-        this._cave.addHazard(Hazards.HazardType.Pit);
-        this.areIdentical(1, this._cave.hazards.length);
-        this.isTrue(this._cave.hazards[0] instanceof Hazards.Pit);
+export class CaveAddHazardsTests extends tsUnit.TestClass {
+    private _cave: Cave;
+
+    constructor() {
+        super();
+
+        var data = [
+            [Hazards.HazardType.Pit, 2],
+            [Hazards.HazardType.Bat, 2],
+            [Hazards.HazardType.Wumpus, 1]
+        ];
+
+        this.parameterizeUnitTest(this.shouldAddHazardsToTheCaveOfTheSpecifiedNumberAndType, data);
+    }
+
+    setUp() {
+        this._cave = new Cave();
+    }
+
+    shouldAddHazardsToTheCaveOfTheSpecifiedNumberAndType(type: Hazards.HazardType, number: number) {
+        this._cave.addHazards(type, number);
+        this.areIdentical(number, this._cave.hazards.length);
+        this.isTrue(this._cave.hazards.every(hazard => hazard.type == type));
     }
 }
 
