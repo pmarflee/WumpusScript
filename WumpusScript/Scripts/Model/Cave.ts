@@ -30,7 +30,13 @@ class Cave {
     }
 
     private addHazard(type: Hazards.HazardType) {
-        Hazards.Hazard.create(type, this, Random.between(0, this.rooms.length - 1));
+        var roomNumber: number;
+        do {
+            roomNumber = Random.between(0, this.rooms.length - 1);
+        }
+        while (this._rooms[roomNumber].containsHazard)
+
+        Hazards.Hazard.create(type, this, roomNumber);
     }
 
     addHazards(type: Hazards.HazardType, number: number) {

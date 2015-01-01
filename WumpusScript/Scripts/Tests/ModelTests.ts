@@ -20,6 +20,11 @@ export class CaveTests extends tsUnit.TestClass {
     "All rooms should have 3 exits"() {
         this.isTrue(this._cave.rooms.every(room => room.exits.length == 3));
     }
+
+    "addHazards should place hazards in a separate room"() {
+        this._cave.addHazards(Hazards.HazardType.Wumpus, 20);
+        this.isTrue(this._cave.rooms.every(room => room.hazards.length == 1));
+    }
 }
 
 export class CaveAddHazardsTests extends tsUnit.TestClass {

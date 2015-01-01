@@ -1,6 +1,4 @@
-﻿/// <reference path="../typings/underscore/underscore.d.ts" />
-
-import Hazards = require("./Hazards")
+﻿import Hazards = require("./Hazards")
 
 class Room {
     private _number: number;
@@ -25,12 +23,12 @@ class Room {
         return this._hazards;
     }
 
-    hasExit(number: number): boolean {
-        return this._exits.indexOf(number) > -1;
+    get containsHazard(): boolean {
+        return this._hazards.length > 0;
     }
 
-    containsHazard(type: Hazards.HazardType) {
-        return _.any(this._hazards, hazard => hazard.type == type);
+    hasExit(number: number): boolean {
+        return this._exits.indexOf(number) > -1;
     }
 
     addHazard(hazard: Hazards.Hazard) {
