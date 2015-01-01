@@ -1,4 +1,5 @@
 ﻿import Room = require("./Room")
+import Hazards = require("./Hazards")
 
 class Cave {
     private _rooms: Room[];
@@ -17,6 +18,10 @@ class Cave {
 
     get rooms(): Room[] {
         return this._rooms;
+    }
+
+    addHazard(roomNumber: number, hazard: Hazards.Hazard) {
+        this._rooms[roomNumber].hazards.push(hazard);
     }
 }
 
