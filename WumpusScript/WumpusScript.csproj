@@ -32,6 +32,7 @@
     <TypeScriptCompile Include="Scripts\Model\Cave.ts" />
     <TypeScriptCompile Include="Scripts\Model\Hazards.ts" />
     <TypeScriptCompile Include="Scripts\Model\Player.ts" />
+    <TypeScriptCompile Include="Scripts\Model\Random.ts" />
     <TypeScriptCompile Include="Scripts\Model\Room.ts" />
     <TypeScriptCompile Include="Scripts\Tests\ModelTests.ts" />
     <TypeScriptCompile Include="Scripts\Tests\tests.ts" />

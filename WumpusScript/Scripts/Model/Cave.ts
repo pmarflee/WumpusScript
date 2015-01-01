@@ -1,5 +1,8 @@
 ﻿import Room = require("./Room")
+/// <reference path="../typings/underscore/underscore.d.ts" />
+
 import Hazards = require("./Hazards")
+import Random = require("./Random")
 
 class Cave {
     private _rooms: Room[];
@@ -20,8 +23,18 @@ class Cave {
         return this._rooms;
     }
 
-    addHazard(roomNumber: number, hazard: Hazards.Hazard) {
-        this._rooms[roomNumber].hazards.push(hazard);
+    get hazards(): Hazards.Hazard[] {
+        return _.reduce<Room, Hazards.Hazard[]>(this.rooms,
+            (state, room) => state.concat(room.hazards),
+            new Array<Hazards.Hazard>());
+    }
+
+    addHazard(type: Hazards.HazardType) {
+        Hazards.Hazard.create(type, this, Random.between(0, this.rooms.length - 1));
+    }
+
+    private getRandomRoomNumber() {
+        return Math.round(Math.random() * 20);
     }
 }
 

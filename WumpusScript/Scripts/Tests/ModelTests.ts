@@ -5,7 +5,11 @@ import Hazards = require("../Model/Hazards")
 
 export class CaveTests extends tsUnit.TestClass {
 
-    private _cave: Cave = new Cave();
+    private _cave: Cave;
+
+    setUp() {
+        this._cave = new Cave();
+    }
 
     "All exits should be bidirectional"() {
         this.isTrue(this._cave.rooms.every(room =>
@@ -17,6 +21,11 @@ export class CaveTests extends tsUnit.TestClass {
         this.isTrue(this._cave.rooms.every(room => room.exits.length == 3));
     }
 
+    "addHazard should add a hazard to the cave"() {
+        this._cave.addHazard(Hazards.HazardType.Pit);
+        this.areIdentical(1, this._cave.hazards.length);
+        this.isTrue(this._cave.hazards[0] instanceof Hazards.Pit);
+    }
 }
 
 export class CaveRoomsHaveCorrectExitsTests extends tsUnit.TestClass {
