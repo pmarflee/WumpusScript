@@ -50,7 +50,9 @@ class Player {
 
         this._encounters
             .filter(encounter => this._room.containsHazardOfType(encounter[0]))
-            .forEach(encounter => encounter[1]());
+            .forEach(encounter => {
+                if (this._isAlive) encounter[1]();
+            });
     }
 
     encounterPit = () => {
