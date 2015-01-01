@@ -120,3 +120,22 @@ export class PlayerHazardTests extends tsUnit.TestClass {
         this.areIdentical(canSense, this._player.senses.indexOf(hazard.type) > -1)
     }
 }
+
+export class PlayerMovementTests extends tsUnit.TestClass {
+    private _cave: Cave;
+    private _player: Player;
+
+    setUp() {
+        this._cave = new Cave();
+        this._player = new Player(this._cave, 0);
+    }
+
+    "Should be able to enter a room which is accessible from their current room"() {
+        this._player.enter(1);
+        this.areIdentical(1, this._player.room.number);
+    }
+
+    "Should not be able to enter a room which is not accessible from their current room"() {
+        this.throws(() => this._player.enter(1));
+    }
+}

@@ -23,12 +23,15 @@ class Player {
             new Array<Hazards.HazardType>());
     }
 
-    canMoveToRoom(number: number) {
-        return this._room.exits.indexOf(number) > -1;
+    canEnter(roomNumber: number) {
+        return this._room.exits.indexOf(roomNumber) > -1;
     }
 
-    moveToRoom(number: number) {
-        this._room = this._cave.rooms[number];
+    enter(roomNumber: number) {
+        if (!this.canEnter(roomNumber)) {
+            throw new RangeError("Cannot enter this room. Rooms accessible are " + this.room.exits.join(","));
+        }
+        this._room = this._cave.rooms[roomNumber];
     }
 }
 
