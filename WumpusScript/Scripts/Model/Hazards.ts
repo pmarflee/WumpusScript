@@ -14,6 +14,17 @@ export class Hazard {
         this._room.addHazard(this);
     }
 
+    static create(type: HazardType, cave: Cave, roomNumber: number): Hazard {
+        switch (type) {
+            case HazardType.Bat:
+                return new Bat(cave, roomNumber);
+            case HazardType.Pit:
+                return new Pit(cave, roomNumber);
+            case HazardType.Wumpus:
+                return new Wumpus(cave, roomNumber);
+        }
+    }
+
     get type(): HazardType {
         return this._type;
     }

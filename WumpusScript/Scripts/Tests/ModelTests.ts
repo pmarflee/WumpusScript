@@ -60,16 +60,6 @@ export class PlayerHazardTests extends tsUnit.TestClass {
 
     private _cave: Cave;
     private _player: Player;
-    private _createHazard = function (type: Hazards.HazardType, roomNumber: number) {
-        switch (type) {
-            case Hazards.HazardType.Bat:
-                return new Hazards.Bat(this._cave, roomNumber);
-            case Hazards.HazardType.Pit:
-                return new Hazards.Pit(this._cave, roomNumber);
-            case Hazards.HazardType.Wumpus:
-                return new Hazards.Wumpus(this._cave, roomNumber);
-        }
-    }
 
     constructor() {
         super();
@@ -92,7 +82,7 @@ export class PlayerHazardTests extends tsUnit.TestClass {
     }
 
     senseHazard(type: Hazards.HazardType, roomNumber: number, canSense: boolean) {
-        var hazard = this._createHazard(type, roomNumber);
+        var hazard = Hazards.Hazard.create(type, this._cave, roomNumber);
         this.areIdentical(canSense, this._player.senses.indexOf(hazard.type) > -1)
     }
 }
