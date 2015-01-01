@@ -50,14 +50,14 @@ class Player {
 
         this._encounters
             .filter(encounter => this._room.containsHazardOfType(encounter[0]))
-            .forEach(encounter => encounter[1].call(this));
+            .forEach(encounter => encounter[1]());
     }
 
-    encounterPit() {
+    encounterPit = () => {
         this._isAlive = false;
     }
 
-    encounterBat() {
+    encounterBat = () => {
         var room = this._room;
         var rooms = this._cave.rooms.length;
         var newRoomNumber = (room.number + Random.between(1, rooms - 1)) % rooms;
