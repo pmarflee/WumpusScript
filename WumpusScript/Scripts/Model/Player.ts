@@ -69,6 +69,14 @@ class Player {
         var bat = room.getHazard(Hazards.HazardType.Bat);
         bat.enter(newRoomNumber);
     }
+
+    encounterWumpus = () => {
+        var wumpus = <Hazards.Wumpus>this._room.getHazard(Hazards.HazardType.Wumpus);
+        wumpus.startle();
+        if (wumpus.room == this._room) {
+            this._isAlive = false;
+        }
+    }
 }
 
 export = Player

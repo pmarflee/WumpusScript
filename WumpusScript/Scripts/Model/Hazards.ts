@@ -1,5 +1,8 @@
-﻿import Cave = require("./Cave")
+﻿/// <reference path="../typings/underscore/underscore.d.ts" />
+
+import Cave = require("./Cave")
 import Room = require("./Room")
+import Random = require("./Random")
 
 export enum HazardType { Pit = 1, Bat = 2, Wumpus = 3 } 
 
@@ -58,8 +61,25 @@ export class Bat extends Hazard {
     }
 }
 
+export enum WumpusAction { Move = 1, Stay = 2 }
+
 export class Wumpus extends Hazard {
-    constructor(cave: Cave, roomNumber: number) {
+    private _actions: WumpusAction[];
+
+    constructor(cave: Cave, roomNumber: number, actions?: WumpusAction[]) {
         super(HazardType.Wumpus, cave, roomNumber);
+
+        this._actions = actions || new Array<WumpusAction>(
+            WumpusAction.Move,
+            WumpusAction.Move,
+            WumpusAction.Move,
+            WumpusAction.Stay); 
+    }
+
+    startle() {
+        if (_.sample(this._actions) == WumpusAction.Move) {
+            var exit = Random.between(0, 2);
+            this.enter(this._room.exits[exit]);
+        }
     }
 }

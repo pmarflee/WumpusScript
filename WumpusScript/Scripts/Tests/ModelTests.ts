@@ -175,4 +175,18 @@ export class PlayerMovementTests extends tsUnit.TestClass {
         this._player.enter(1);
         this.areIdentical(1, this._player.room.number);
     }
+
+    "Should be killed by entering a room containing a wumpus that does not move when startled"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Stay]);
+        this._player.enter(1);
+        this.areIdentical(false, this._player.isAlive);
+    }
+
+    "Should not be killed by entering a room containing a wumpus that moves when startled"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move]);
+        this._player.enter(1);
+        this.areIdentical(true, this._player.isAlive);
+    }
 }
