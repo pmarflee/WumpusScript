@@ -19,49 +19,34 @@ export class CaveTests extends tsUnit.TestClass {
 
 } 
 
-export class PlayerTests extends tsUnit.TestClass {
+export class PlayerHazardTests extends tsUnit.TestClass {
 
     private _cave: Cave;
     private _player: Player;
+
+    constructor() {
+        super();
+
+        var data = [
+            [new Hazards.Bat(), 1, true],
+            [new Hazards.Pit(), 1, true],
+            [new Hazards.Wumpus(), 1, true],
+            [new Hazards.Bat(), 2, false],
+            [new Hazards.Pit(), 2, false],
+            [new Hazards.Wumpus(), 2, false]
+        ];
+
+        this.parameterizeUnitTest(this.senseHazard, data);
+    }
 
     setUp() {
         this._cave = new Cave();
         this._player = new Player(this._cave, this._cave.rooms[0]); 
     }
 
-    "Should be able to sense the wumpus if it is in an adjoining room"() {
-        var room = this._cave.rooms[this._player.room.exits[0]];
-        room.hazards.push(new Hazards.Wumpus());
-        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Wumpus) > -1)
-    }
-
-    "Should not be able to sense the wumpus if it is not in an adjoining room"() {
-        var room = this._cave.rooms[2];
-        room.hazards.push(new Hazards.Wumpus());
-        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Wumpus) > -1)
-    }
-
-    "Should be able to sense a bat if it is in an adjoining room"() {
-        var room = this._cave.rooms[this._player.room.exits[0]];
-        room.hazards.push(new Hazards.Bat());
-        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Bat) > -1)
-    }
-
-    "Should not be able to sense a bat if it is not in an adjoining room"() {
-        var room = this._cave.rooms[2];
-        room.hazards.push(new Hazards.Bat());
-        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Bat) > -1)
-    }
-
-    "Should be able to sense a pit if it is in an adjoining room"() {
-        var room = this._cave.rooms[this._player.room.exits[0]];
-        room.hazards.push(new Hazards.Pit());
-        this.isTrue(this._player.senses.indexOf(Hazards.HazardType.Pit) > -1)
-    }
-
-    "Should not be able to sense a pit if it is not in an adjoining room"() {
-        var room = this._cave.rooms[2];
-        room.hazards.push(new Hazards.Pit());
-        this.isFalse(this._player.senses.indexOf(Hazards.HazardType.Pit) > -1)
+    senseHazard(hazard: Hazards.Hazard, number: number, canSense: boolean) {
+        var room = this._cave.rooms[number];
+        room.hazards.push(hazard);
+        this.areIdentical(canSense, this._player.senses.indexOf(hazard.type) > -1)
     }
 }
