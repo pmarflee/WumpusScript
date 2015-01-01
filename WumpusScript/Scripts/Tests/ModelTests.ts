@@ -152,4 +152,18 @@ export class PlayerMovementTests extends tsUnit.TestClass {
         this._player.enter(1);
         this.areIdentical(true, this._player.isAlive);
     }
+
+    "Should be transported to another room by entering a room containing a bat"() {
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        Hazards.Hazard.create(Hazards.HazardType.Bat, this._cave, 1);
+        this._player.enter(1);
+        this.areNotIdentical(1, this._player.room.number);
+    }
+
+    "Should not be transported to another room by entering a room not containing a bat"() {
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        Hazards.Hazard.create(Hazards.HazardType.Bat, this._cave, 2);
+        this._player.enter(1);
+        this.areIdentical(1, this._player.room.number);
+    }
 }

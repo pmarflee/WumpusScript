@@ -3,6 +3,7 @@
 import Cave = require("./Cave")
 import Room = require("./Room")
 import Hazards = require("./Hazards")
+import Random = require("./Random")
 
 class Player {
     private _cave: Cave;
@@ -41,6 +42,10 @@ class Player {
         if (!this.canEnter(roomNumber)) {
             throw new RangeError("Cannot enter this room. Rooms accessible are " + this.room.exits.join(","));
         }
+        this.move(roomNumber);
+    }
+
+    move(roomNumber: number) {
         this._room = this._cave.rooms[roomNumber];
 
         this._encounters
@@ -50,6 +55,17 @@ class Player {
 
     encounterPit() {
         this._isAlive = false;
+    }
+
+    encounterBat() {
+        var room = this._room;
+        var rooms = this._cave.rooms.length;
+        var newRoomNumber = (room.number + Random.between(1, rooms - 1)) % rooms;
+
+        this.move(newRoomNumber);
+
+        var bat = room.getHazard(Hazards.HazardType.Bat);
+        bat.enter(newRoomNumber);
     }
 }
 

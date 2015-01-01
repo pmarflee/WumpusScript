@@ -1,4 +1,6 @@
-﻿import Hazards = require("./Hazards")
+﻿/// <reference path="../typings/underscore/underscore.d.ts" />
+
+import Hazards = require("./Hazards")
 
 class Room {
     private _number: number;
@@ -41,6 +43,10 @@ class Room {
 
     removeHazard(hazard: Hazards.Hazard) {
         this._hazards.splice(this._hazards.indexOf(hazard), 1);
+    }
+
+    getHazard(type: Hazards.HazardType) {
+        return _.findWhere(this._hazards, { type: type });
     }
 }
 
