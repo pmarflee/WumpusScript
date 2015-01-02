@@ -2,19 +2,17 @@
 
 import Cave = require("./Cave")
 import Room = require("./Room")
+import Player = require("./Player")
 import Random = require("./Random")
 
 export enum HazardType { Pit = 1, Bat = 2, Wumpus = 3 } 
 
 export class Hazard {
-    protected _type: HazardType;
-    protected _cave: Cave;
     protected _room: Room;
+    protected _act: { (player: Player): void }
 
-    constructor(type: HazardType, cave: Cave, roomNumber: number) {
-        this._type = type;
-        this._cave = cave;
-        this._room = cave.rooms[roomNumber];
+    constructor(protected _type: HazardType, protected _cave: Cave, protected roomNumber: number) {
+        this._room = this._cave.rooms[roomNumber];
         this._room.addHazard(this);
     }
 
@@ -43,6 +41,8 @@ export class Hazard {
         this._room = this._cave.rooms[number];
         this._room.addHazard(this);
     }
+
+    act(player: Player) { }
 }
 
 export class Pit extends Hazard {
@@ -53,33 +53,54 @@ export class Pit extends Hazard {
     enter(number: number) {
         throw new Error("Pits can't move");
     }
+
+    act(player: Player) { player.kill(); }
 }
 
 export class Bat extends Hazard {
-    constructor(cave: Cave, roomNumber: number) {
+    private _roomSelector: { (): number };
+
+    constructor(cave: Cave, roomNumber: number, roomSelector?: { (): number }) {
         super(HazardType.Bat, cave, roomNumber);
+        this._roomSelector = roomSelector || this.defaultRoomSelector;
+    }
+
+    act(player: Player) {
+        var newRoomNumber = this._roomSelector();
+        player.move(newRoomNumber);
+        this.enter(newRoomNumber);
+    }
+
+    defaultRoomSelector = (): number => {
+        var room = this._room;
+        var rooms = this._cave.rooms.length;
+        return (room.number + Random.between(1, rooms - 1)) % rooms;
     }
 }
 
 export enum WumpusAction { Move = 1, Stay = 2 }
 
 export class Wumpus extends Hazard {
-    private _actions: WumpusAction[];
+    private _roomSelector: { (): number };
 
-    constructor(cave: Cave, roomNumber: number, actions?: WumpusAction[]) {
+    constructor(cave: Cave, roomNumber: number,
+        private _actions: WumpusAction[]= [WumpusAction.Move, WumpusAction.Move, WumpusAction.Move, WumpusAction.Stay],
+        roomSelector?: { (): number }) {
         super(HazardType.Wumpus, cave, roomNumber);
-
-        this._actions = actions || new Array<WumpusAction>(
-            WumpusAction.Move,
-            WumpusAction.Move,
-            WumpusAction.Move,
-            WumpusAction.Stay); 
+        this._roomSelector = roomSelector || this.defaultRoomSelector;
     }
 
-    startle() {
+    act(player: Player) {
         if (_.sample(this._actions) == WumpusAction.Move) {
-            var exit = Random.between(0, 2);
-            this.enter(this._room.exits[exit]);
+            this.enter(this._roomSelector());
         }
+        if (this._room == player.room) {
+            player.kill();
+        }
+    }
+
+    defaultRoomSelector = (): number => {
+        var exit = Random.between(0, 2);
+        return this._room.exits[exit];
     }
 }

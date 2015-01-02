@@ -176,6 +176,14 @@ export class PlayerMovementTests extends tsUnit.TestClass {
         this.areIdentical(1, this._player.room.number);
     }
 
+    "Should be transported twice by entering a room containing a bat that transports the player to another room containing a bat"() {
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        var bat1 = new Hazards.Bat(this._cave, 1, () => 2);
+        var bat2 = new Hazards.Bat(this._cave, 2, () => 3);
+        this._player.enter(1);
+        this.areIdentical(3, this._player.room.number);
+    }
+
     "Should be killed by entering a room containing a wumpus that does not move when startled"() {
         this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
         var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Stay]);
@@ -186,6 +194,40 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     "Should not be killed by entering a room containing a wumpus that moves when startled"() {
         this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
         var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move]);
+        this._player.enter(1);
+        this.areIdentical(true, this._player.isAlive);
+    }
+
+    "Should be killed if transported by a bat into another room containing a pit"() {
+        this._player.addEncounter(Hazards.HazardType.Pit, this._player.encounterPit);
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        var bat = new Hazards.Bat(this._cave, 1, () => 2);
+        Hazards.Hazard.create(Hazards.HazardType.Pit, this._cave, 2);
+        this._player.enter(1);
+        this.areIdentical(false, this._player.isAlive);
+    }
+
+    "Should not be killed if transported by a bat into another room that contains no hazards"() {
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        Hazards.Hazard.create(Hazards.HazardType.Bat, this._cave, 1);
+        this._player.enter(1);
+        this.areIdentical(true, this._player.isAlive);
+    }
+
+    "Should be killed if transported by a bat into another room containing a wumpus that does not move when startled"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        var bat = new Hazards.Bat(this._cave, 1, () => 2);
+        var wumpus = new Hazards.Wumpus(this._cave, 2, [Hazards.WumpusAction.Stay]);
+        this._player.enter(1);
+        this.areIdentical(false, this._player.isAlive);
+    }
+
+    "Should not be killed if transported by a bat into another room containing a wumpus that does move when startled"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
+        var bat = new Hazards.Bat(this._cave, 1, () => 2);
+        var wumpus = new Hazards.Wumpus(this._cave, 2, [Hazards.WumpusAction.Move]);
         this._player.enter(1);
         this.areIdentical(true, this._player.isAlive);
     }

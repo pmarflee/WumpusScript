@@ -3,15 +3,9 @@
 import Hazards = require("./Hazards")
 
 class Room {
-    private _number: number;
-    private _exits: number[];
-    private _hazards: Hazards.Hazard[];
+    private _hazards: Hazards.Hazard[] = new Array<Hazards.Hazard>();
 
-    constructor(number: number, exits: number[]) {
-        this._number = number;
-        this._exits = exits;
-        this._hazards = new Array<Hazards.Hazard>();
-    }
+    constructor(private _number: number, private _exits: number[]) { }
 
     get number(): number {
         return this._number;

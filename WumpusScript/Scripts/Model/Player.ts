@@ -6,14 +6,12 @@ import Hazards = require("./Hazards")
 import Random = require("./Random")
 
 class Player {
-    private _cave: Cave;
     private _room: Room;
     private _isAlive: boolean = true;
     private _encounters: [Hazards.HazardType, { (): void; }][] = new Array <[Hazards.HazardType, { (): void; }]>();
 
-    constructor(cave: Cave, roomNumber: number) {
-        this._cave = cave;
-        this._room = cave.rooms[roomNumber];
+    constructor(private _cave: Cave, roomNumber: number) {
+        this._room = this._cave.rooms[roomNumber];
     }
 
     get room(): Room {
@@ -28,6 +26,10 @@ class Player {
 
     get isAlive(): boolean {
         return this._isAlive;
+    }
+
+    kill() {
+        this._isAlive = false;
     }
 
     addEncounter(type: Hazards.HazardType, action: { (): void }) {
@@ -60,22 +62,11 @@ class Player {
     }
 
     encounterBat = () => {
-        var room = this._room;
-        var rooms = this._cave.rooms.length;
-        var newRoomNumber = (room.number + Random.between(1, rooms - 1)) % rooms;
-
-        this.move(newRoomNumber);
-
-        var bat = room.getHazard(Hazards.HazardType.Bat);
-        bat.enter(newRoomNumber);
+        (this._room.getHazard(Hazards.HazardType.Bat)).act(this);
     }
 
     encounterWumpus = () => {
-        var wumpus = <Hazards.Wumpus>this._room.getHazard(Hazards.HazardType.Wumpus);
-        wumpus.startle();
-        if (wumpus.room == this._room) {
-            this._isAlive = false;
-        }
+        (this._room.getHazard(Hazards.HazardType.Wumpus)).act(this);
     }
 }
 
