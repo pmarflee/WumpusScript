@@ -185,14 +185,14 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     }
 
     "Should be killed by entering a room containing a wumpus that does not move when startled"() {
-        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
         var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Stay]);
         this._player.enter(1);
         this.areIdentical(false, this._player.isAlive);
     }
 
     "Should not be killed by entering a room containing a wumpus that moves when startled"() {
-        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
         var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move]);
         this._player.enter(1);
         this.areIdentical(true, this._player.isAlive);
@@ -215,7 +215,7 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     }
 
     "Should be killed if transported by a bat into another room containing a wumpus that does not move when startled"() {
-        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
         this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
         var bat = new Hazards.Bat(this._cave, 1, () => 2);
         var wumpus = new Hazards.Wumpus(this._cave, 2, [Hazards.WumpusAction.Stay]);
@@ -224,11 +224,68 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     }
 
     "Should not be killed if transported by a bat into another room containing a wumpus that does move when startled"() {
-        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.encounterWumpus);
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
         this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
         var bat = new Hazards.Bat(this._cave, 1, () => 2);
         var wumpus = new Hazards.Wumpus(this._cave, 2, [Hazards.WumpusAction.Move]);
         this._player.enter(1);
         this.areIdentical(true, this._player.isAlive);
+    }
+}
+
+export class PlayerShootArrowTests extends tsUnit.TestClass {
+    private _cave: Cave;
+    private _player: Player;
+
+    setUp() {
+        this._cave = new Cave();
+        this._player = new Player(this._cave, 0);
+    }
+
+    "Should kill wumpus if they shoot an arrow into its room"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1);
+        this._player.shoot(1);
+        this.isFalse(wumpus.isAlive);
+    }
+
+    "Should not be allowed to shoot an arrow into a non-adjoining room"() {
+        this.throws({
+            fn: () => this._player.shoot(2),
+            exceptionString: "Cannot access this room. Rooms accessible are 1,4,7"
+        });
+    }
+
+    "Should not kill wumpus if they do not shoot an arrow into its room"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1);
+        this._player.shoot(4);
+        this.isTrue(wumpus.isAlive);
+    }
+
+    "Should be killed if they miss the wumpus and startle it into moving into their room"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move], () => 0);
+        this._player.shoot(4);
+        this.isFalse(this._player.isAlive);
+    }
+
+    "Should not be killed if they miss the wumpus and startle it into moving into a room which is not their room"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move], () => 2);
+        this._player.shoot(4);
+        this.isTrue(this._player.isAlive);
+    }
+
+    "Should not be killed if they miss the wumpus but don't cause it to move"() {
+        this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
+        var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Stay]);
+        this._player.shoot(4);
+        this.isTrue(this._player.isAlive);
+    }
+
+    "Arrows should not remain in rooms after shooting has finished"() {
+        this._player.shoot(1);
+        this.isFalse(this._cave.rooms[1].hasArrow);
     }
 }

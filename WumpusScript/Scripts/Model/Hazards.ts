@@ -82,6 +82,7 @@ export enum WumpusAction { Move = 1, Stay = 2 }
 
 export class Wumpus extends Hazard {
     private _roomSelector: { (): number };
+    private _isAlive: boolean = true;
 
     constructor(cave: Cave, roomNumber: number,
         private _actions: WumpusAction[]= [WumpusAction.Move, WumpusAction.Move, WumpusAction.Move, WumpusAction.Stay],
@@ -91,6 +92,10 @@ export class Wumpus extends Hazard {
     }
 
     act(player: Player) {
+        if (this._room.hasArrow) {
+            this._isAlive = false;
+            return;
+        }
         if (_.sample(this._actions) == WumpusAction.Move) {
             this.enter(this._roomSelector());
         }
@@ -102,5 +107,9 @@ export class Wumpus extends Hazard {
     defaultRoomSelector = (): number => {
         var exit = Random.between(0, 2);
         return this._room.exits[exit];
+    }
+
+    get isAlive(): boolean {
+        return this._isAlive;
     }
 }

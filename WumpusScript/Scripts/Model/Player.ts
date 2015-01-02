@@ -41,20 +41,30 @@ class Player {
     }
 
     enter(roomNumber: number) {
-        if (!this.canEnter(roomNumber)) {
-            throw new RangeError("Cannot enter this room. Rooms accessible are " + this.room.exits.join(","));
-        }
+        this.validateRoomSelection(roomNumber);
         this.move(roomNumber);
     }
 
     move(roomNumber: number) {
         this._room = this._cave.rooms[roomNumber];
-
         this._encounters
             .filter(encounter => this._room.containsHazardOfType(encounter[0]))
             .forEach(encounter => {
                 if (this._isAlive) encounter[1]();
             });
+    }
+
+    shoot(roomNumber: number) {
+        this.validateRoomSelection(roomNumber);
+        this._cave.rooms[roomNumber].hasArrow = true;
+        this.startleWumpus();
+        this._cave.rooms[roomNumber].hasArrow = false;
+    }
+
+    validateRoomSelection(roomNumber: number) {
+        if (!this.canEnter(roomNumber)) {
+            throw new RangeError("Cannot access this room. Rooms accessible are " + this.room.exits.join(","));
+        }
     }
 
     encounterPit = () => {
@@ -65,8 +75,9 @@ class Player {
         (this._room.getHazard(Hazards.HazardType.Bat)).act(this);
     }
 
-    encounterWumpus = () => {
-        (this._room.getHazard(Hazards.HazardType.Wumpus)).act(this);
+    startleWumpus = () => {
+        _.where(this._cave.hazards, { type: Hazards.HazardType.Wumpus })
+            .forEach(hazard => hazard.act(this));
     }
 }
 

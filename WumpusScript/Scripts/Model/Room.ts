@@ -4,6 +4,7 @@ import Hazards = require("./Hazards")
 
 class Room {
     private _hazards: Hazards.Hazard[] = new Array<Hazards.Hazard>();
+    public hasArrow: boolean = false;
 
     constructor(private _number: number, private _exits: number[]) { }
 
