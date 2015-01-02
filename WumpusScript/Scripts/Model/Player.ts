@@ -68,7 +68,7 @@ class Player {
     }
 
     encounterPit = () => {
-        this._isAlive = false;
+        (this._room.getHazard(Hazards.HazardType.Pit)).act(this);
     }
 
     encounterBat = () => {
