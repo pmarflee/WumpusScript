@@ -30,6 +30,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="Scripts\Model\Cave.ts" />
+    <TypeScriptCompile Include="Scripts\Model\GameEvents.ts" />
+    <TypeScriptCompile Include="Scripts\Model\Events.ts" />
     <TypeScriptCompile Include="Scripts\Model\Hazards.ts" />
     <TypeScriptCompile Include="Scripts\Model\Player.ts" />
     <TypeScriptCompile Include="Scripts\Model\Random.ts" />

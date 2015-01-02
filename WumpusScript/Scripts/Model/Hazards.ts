@@ -6,6 +6,7 @@ import Player = require("./Player")
 import Random = require("./Random")
 
 export enum HazardType { Pit = 1, Bat = 2, Wumpus = 3 } 
+export enum ActionResult { None = 0, Moved = 1 }
 
 export class Hazard {
     protected _room: Room;
@@ -42,7 +43,9 @@ export class Hazard {
         this._room.addHazard(this);
     }
 
-    act(player: Player) { }
+    act(player: Player): ActionResult {
+        return ActionResult.None;
+    }
 }
 
 export class Pit extends Hazard {
@@ -54,7 +57,10 @@ export class Pit extends Hazard {
         throw new Error("Pits can't move");
     }
 
-    act(player: Player) { player.kill(); }
+    act(player: Player): ActionResult {
+        player.kill();
+        return ActionResult.None;
+    }
 }
 
 export class Bat extends Hazard {
@@ -65,10 +71,11 @@ export class Bat extends Hazard {
         this._roomSelector = roomSelector || this.defaultRoomSelector;
     }
 
-    act(player: Player) {
+    act(player: Player): ActionResult {
         var newRoomNumber = this._roomSelector();
         player.move(newRoomNumber);
         this.enter(newRoomNumber);
+        return ActionResult.Moved;
     }
 
     defaultRoomSelector = (): number => {
@@ -91,17 +98,22 @@ export class Wumpus extends Hazard {
         this._roomSelector = roomSelector || this.defaultRoomSelector;
     }
 
-    act(player: Player) {
+    act(player: Player): ActionResult {
+        var result: ActionResult;
+
         if (this._room.hasArrow) {
             this._isAlive = false;
-            return;
+            return ActionResult.None;
         }
         if (_.sample(this._actions) == WumpusAction.Move) {
             this.enter(this._roomSelector());
+            result = ActionResult.Moved;
         }
         if (this._room == player.room) {
             player.kill();
         }
+
+        return result;
     }
 
     defaultRoomSelector = (): number => {

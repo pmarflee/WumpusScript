@@ -4,13 +4,16 @@ import Cave = require("./Cave")
 import Room = require("./Room")
 import Hazards = require("./Hazards")
 import Random = require("./Random")
+import Events = require("./Events")
+import GameEvents = require("./GameEvents")
 
 class Player {
     private _room: Room;
     private _isAlive: boolean = true;
-    private _encounters: [Hazards.HazardType, { (): void; }][] = new Array <[Hazards.HazardType, { (): void; }]>();
+    private _encounters: [Hazards.HazardType, { (): void; }][] = new Array<[Hazards.HazardType, { (): void; }]>();
+    private _onGameEvent = new Events.LiteEvent<GameEvents.Type>();
 
-    constructor(private _cave: Cave, roomNumber: number) {
+    constructor(private _cave: Cave, roomNumber: number = 0) {
         this._room = this._cave.rooms[roomNumber];
     }
 
@@ -67,17 +70,36 @@ class Player {
         }
     }
 
+    public get gameEvent(): Events.ILiteEvent<GameEvents.Type> {
+        return this._onGameEvent;
+    }
+
     encounterPit = () => {
-        (this._room.getHazard(Hazards.HazardType.Pit)).act(this);
+        var pit = this._room.getHazard(Hazards.HazardType.Pit);
+        if (pit) {
+            pit.act(this);
+            this._onGameEvent.trigger(GameEvents.Type.FellIntoPit);
+        }
     }
 
     encounterBat = () => {
-        (this._room.getHazard(Hazards.HazardType.Bat)).act(this);
+        var bat = this._room.getHazard(Hazards.HazardType.Bat);
+        if (bat) {
+            bat.act(this);
+            this._onGameEvent.trigger(GameEvents.Type.WhiskedAwayByBats);
+        }
     }
 
     startleWumpus = () => {
-        _.where(this._cave.hazards, { type: Hazards.HazardType.Wumpus })
-            .forEach(hazard => hazard.act(this));
+        var wumpus = _.findWhere(this._cave.hazards, { type: Hazards.HazardType.Wumpus });
+        if (!wumpus) return;
+        var wumpusAction = wumpus.act(this);
+        if (wumpusAction == Hazards.ActionResult.Moved) {
+            this._onGameEvent.trigger(GameEvents.Type.StartledWumpus);
+        }
+        if (!this._isAlive) {
+            this._onGameEvent.trigger(GameEvents.Type.EatenByWumpus);
+        }
     }
 }
 
