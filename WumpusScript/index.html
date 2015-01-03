@@ -27,7 +27,7 @@
 
     <script type="text/template" id="actiontemplate">
         <h2>Select Action</h2>
-        <% if (player.isAlive || wumpus.IsAlive) { %>
+        <% if (player.isAlive == wumpus.isAlive) { %>
         <div class="move">
             <h3>Move:</h3>
             <div>
