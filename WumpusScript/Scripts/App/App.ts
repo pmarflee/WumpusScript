@@ -39,31 +39,29 @@ class Game {
         this._player = player;
 
         this.compileTemplates();
-        this.renderInstructions();
+        if (showInstructions) this.renderInstructions();
         this.renderViews();
 
         this._newGame = false;
     }
 
     private handleEvent = (type: GameEvents.Type) => {
-        type => {
-            var text: string;
-            switch (type) {
-                case GameEvents.Type.EatenByWumpus:
-                    text = "TSK TSK TSK- WUMPUS GOT YOU!";
-                    break;
-                case GameEvents.Type.FellIntoPit:
-                    text = "YYYIIIIEEEE . . . FELL IN PIT";
-                    break;
-                case GameEvents.Type.StartledWumpus:
-                    text = "YOU HEARD A RUMBLING IN A NEARBY CAVERN";
-                    break;
-                case GameEvents.Type.WhiskedAwayByBats:
-                    text = "ZAP--SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!";
-                    break;
-            }
-            this.renderNarration(text);
+        var text: string;
+        switch (type) {
+            case GameEvents.Type.EatenByWumpus:
+                text = "TSK TSK TSK- WUMPUS GOT YOU!";
+                break;
+            case GameEvents.Type.FellIntoPit:
+                text = "YYYIIIIEEEE . . . FELL IN PIT";
+                break;
+            case GameEvents.Type.StartledWumpus:
+                text = "YOU HEARD A RUMBLING IN A NEARBY CAVERN";
+                break;
+            case GameEvents.Type.WhiskedAwayByBats:
+                text = "ZAP--SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!";
+                break;
         }
+        this.renderNarration(text);
     }
 
     get player(): Player {
