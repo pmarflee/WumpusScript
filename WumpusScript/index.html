@@ -3,13 +3,100 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>TypeScript HTML App</title>
-    <link rel="stylesheet" href="app.css" type="text/css" />
-    <script src="app.js"></script>
+    <title>Hunt the Wumpus!</title>
+    <link rel="stylesheet" href="Content/app.css" type="text/css" />
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
+    <div class="outer">
+        <div class="inner">
+            <h1>Hunt the Wumpus!</h1>
+        </div>
+    </div>
 
-    <div id="content"></div>
+    <div id="Narrator"></div>
+
+    <div class="outer">
+        <div class="inner">
+            <h2>Select Action</h2>
+            <div id="ActionButtons"></div>
+        </div>
+    </div>
+
+    <script type="text/template" id="narratortemplate">
+        <div class="narrationtext"><%= text %></div>
+    </script>
+
+    <script type="text/template" id="actiontemplate">
+        <div class="move">
+            <h3>Move:</h3>
+            <div>
+                <% _.each(exits, function(exit) { %>
+                <input type="button" value="<%= exit %>" />
+                <% }); %>
+            </div>
+        </div>
+        <br />
+        <div class="shoot">
+            <h3>Shoot:</h3>
+            <div>
+                <% _.each(exits, function(exit) { %>
+                <input type="button" value="<%= exit %>" />
+                <% }); %>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="instructionstemplate">
+        <p>
+            THE WUMPUS LIVES IN A CAVE OF 20 ROOMS: EACH ROOM HAS 3 TUNNELS LEADING TO OTHER
+            ROOMS. (LOOK AT A DODECAHEDRON TO SEE HOW THIS WORKS. IF YOU DON'T KNOW WHAT A
+            DODECAHEDRON IS, ASK SOMEONE)
+        </p>
+        <p>***</p>
+        <p>HAZARDS:</p>
+        <p>
+            BOTTOMLESS PITS - TWO ROOMS HAVE BOTTOMLESS PITS IN THEM
+            IF YOU GO THERE: YOU FALL INTO THE PIT (& LOSE!)
+        </p>
+        <p>
+            SUPER BATS  - TWO OTHER ROOMS HAVE SUPER BATS. IF YOU GO THERE, A BAT GRABS YOU
+            AND TAKES YOU TO SOME OTHER ROOM AT RANDOM. (WHICH MIGHT BE TROUBLESOME)
+        </p>
+        <p>WUMPUS:</p>
+        <p>
+            THE WUMPUS IS NOT BOTHERED BY THE HAZARDS (HE HAS SUCKER FEET AND IS TOO BIG FOR
+            A BAT TO LIFT). USUALLY HE IS ASLEEP. TWO THINGS WAKE HIM UP: YOUR ENTERING HIS
+            ROOM OR YOUR SHOOTING AN ARROW.
+        </p>
+        <p>
+            IF THE WUMPUS WAKES, HE MOVES (P=0.75) ONE ROOM OR STAYS STILL (P=0.25). AFTER
+            THAT, IF HE IS WHERE YOU ARE, HE EATS YOU UP (& YOU LOSE!)
+        </p>
+        <p>YOU:</p>
+        <p>
+            EACH TURN YOU MAY MOVE OR SHOOT AN ARROW
+            MOVING: YOU CAN GO ONE ROOM (THRU ONE TUNNEL)
+            ARROWS: YOU HAVE UNLIMITED ARROWS.
+        </p>
+        <p>
+            EACH ARROW CAN TRAVEL 1 ROOM: YOU AIM BY TELLING THE COMPUTER THE ROOM
+            YOU WANT THE ARROW TO GO TO.
+        </p>
+        <p>IF THE ARROW HITS THE WUMPUS: YOU WIN.</p>
+        <p>WARNINGS:</p>
+        <p>
+            WHEN YOU ARE ONE ROOM AWAY FROM WUMPUS OR HAZARD, THE COMPUTER SAYS:
+            <ul>
+                <li>WUMPUS - 'I SMELL A WUMPUS'</li>
+                <li>BAT - 'BATS NEARBY'</li>
+                <li>PIT - 'I FEEL A DRAFT'</li>
+            </ul>
+        </p>
+    </script>
+
+    <script src="Scripts/jquery-1.9.0.js"></script>
+    <script src="Scripts/underscore.js"></script>
+    <script data-main="Scripts/App/App.js" src="Scripts/require.js"></script>
+
 </body>
 </html>
