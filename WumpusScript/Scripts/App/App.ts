@@ -23,17 +23,19 @@ class Game {
         this._newGame = true;
 
         var cave = new Cave();
-        cave.addHazards(Hazards.HazardType.Bat, 2);
-        cave.addHazards(Hazards.HazardType.Pit, 2);
-        cave.addHazards(Hazards.HazardType.Wumpus, 1);
-
-        this._wumpus = <Hazards.Wumpus>_.findWhere(cave.hazards, { type: Hazards.HazardType.Wumpus });
+        cave.shuffle();
 
         var player = new Player(cave, Random.between(0, cave.rooms.length - 1));
         player.addEncounter(Hazards.HazardType.Bat, player.encounterBat);
         player.addEncounter(Hazards.HazardType.Pit, player.encounterPit);
         player.addEncounter(Hazards.HazardType.Wumpus, player.startleWumpus);
         player.gameEvent.on(this.handleEvent);
+
+        cave.addHazards(Hazards.HazardType.Bat, 2);
+        cave.addHazards(Hazards.HazardType.Pit, 2);
+        cave.addHazards(Hazards.HazardType.Wumpus, 1);
+
+        this._wumpus = <Hazards.Wumpus>_.findWhere(cave.hazards, { type: Hazards.HazardType.Wumpus });
 
         this._cave = cave;
         this._player = player;

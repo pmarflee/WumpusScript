@@ -1,22 +1,43 @@
-﻿import Room = require("./Room")
-/// <reference path="../typings/underscore/underscore.d.ts" />
+﻿/// <reference path="../typings/underscore/underscore.d.ts" />
 
+import Room = require("./Room")
 import Hazards = require("./Hazards")
 import Random = require("./Random")
 
 class Cave {
     private _rooms: Room[];
+    private _data: number[][] = [
+        [1, 4, 7], [0, 2, 9], [1, 3, 11],
+        [2, 4, 13], [0, 3, 5], [4, 6, 14],
+        [5, 7, 16], [0, 6, 8], [7, 9, 17],
+        [1, 8, 10], [9, 11, 18], [2, 10, 12],
+        [11, 13, 19], [3, 12, 14], [5, 13, 15],
+        [14, 16, 19], [6, 15, 17], [8, 16, 18],
+        [10, 17, 19], [12, 15, 18]];
 
     constructor() {
-        var data: number[][] = [
-            [1, 4, 7], [0, 2, 9], [1, 3, 11],
-            [2, 4, 13], [0, 3, 5], [4, 6, 14],
-            [5, 7, 16], [0, 6, 8], [7, 9, 17],
-            [1, 8, 10], [9, 11, 18], [2, 10, 12],
-            [11, 13, 19], [3, 12, 14], [5, 13, 15],
-            [14, 16, 19], [6, 15, 17], [8, 16, 18],
-            [10, 17, 19], [12, 15, 18]];
+        this.initialise(this._data);
+    }
+
+    private initialise(data: number[][]) {
         this._rooms = data.map((exits, index) => new Room(index, exits));
+    }
+
+    shuffle() {
+        var data = this._data;
+        var rooms = data.length;
+        var newData = new Array<number[]>(rooms);
+        var shuffle = _(_.range(rooms)).shuffle();
+
+        for (var i = 0; i < rooms; i++) {
+            var newExits = new Array<number>(3);
+            for (var j = 0; j < 3; j++) {
+                newExits[j] = shuffle[data[i][j]];
+            }
+            newData[shuffle[i]] = newExits;
+        }
+
+        this.initialise(newData);
     }
 
     get rooms(): Room[] {
