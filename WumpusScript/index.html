@@ -27,10 +27,11 @@
 
     <script type="text/template" id="actiontemplate">
         <h2>Select Action</h2>
+        <% if (player.isAlive || wumpus.IsAlive) { %>
         <div class="move">
             <h3>Move:</h3>
             <div>
-                <% _.each(exits, function(exit) { %>
+                <% _.each(player.room.exits, function(exit) { %>
                 <input type="button" value="<%= exit %>" />
                 <% }); %>
             </div>
@@ -39,11 +40,18 @@
         <div class="shoot">
             <h3>Shoot:</h3>
             <div>
-                <% _.each(exits, function(exit) { %>
+                <% _.each(player.room.exits, function(exit) { %>
                 <input type="button" value="<%= exit %>" />
                 <% }); %>
             </div>
         </div>
+        <% } else { %>
+        <div class="new">
+            <div>
+                <input type="button" value="New Game" />
+            </div>
+        </div>
+        <% } %>
     </script>
 
     <script type="text/template" id="instructionstemplate">

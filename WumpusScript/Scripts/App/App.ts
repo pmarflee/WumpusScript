@@ -13,9 +13,15 @@ class Game {
     private _wumpus: Hazards.Wumpus;
     private _actionTemplate: { (data: any): string };
     private _narratorTemplate: { (data: any): string };
-    private _started: boolean = false;
+    private _newGame: boolean;
 
     constructor() {
+        this.initialise();
+    }
+
+    private initialise(showInstructions: boolean = true) {
+        this._newGame = true;
+
         var cave = new Cave();
         cave.addHazards(Hazards.HazardType.Bat, 2);
         cave.addHazards(Hazards.HazardType.Pit, 2);
@@ -27,7 +33,20 @@ class Game {
         player.addEncounter(Hazards.HazardType.Bat, player.encounterBat);
         player.addEncounter(Hazards.HazardType.Pit, player.encounterPit);
         player.addEncounter(Hazards.HazardType.Wumpus, player.startleWumpus);
-        player.gameEvent.on(type => {
+        player.gameEvent.on(this.handleEvent);
+
+        this._cave = cave;
+        this._player = player;
+
+        this.compileTemplates();
+        this.renderInstructions();
+        this.renderViews();
+
+        this._newGame = false;
+    }
+
+    private handleEvent = (type: GameEvents.Type) => {
+        type => {
             var text: string;
             switch (type) {
                 case GameEvents.Type.EatenByWumpus:
@@ -44,14 +63,15 @@ class Game {
                     break;
             }
             this.renderNarration(text);
-        });
+        }
+    }
 
-        this._cave = cave;
-        this._player = player;
+    get player(): Player {
+        return this._player;
+    }
 
-        this.compileTemplates();
-        this.renderInstructions();
-        this.renderViews();
+    get wumpus(): Hazards.Wumpus {
+        return this._wumpus;
     }
 
     move(roomNumber: number) {
@@ -75,26 +95,23 @@ class Game {
     }
 
     private renderActions() {
-        var buttons = $("#ActionButtons"); 
-        if (!this._player.isAlive || !this._wumpus.isAlive) {
-            buttons.html('');
-        }
-        else {
-            $("#ActionButtons").html(this._actionTemplate({ exits: this._player.room.exits }));
-            $(".move").find(":button").each((index, element) => {
-                $(element).click(() => { this.move(parseInt($(element).val())) });
-            });
-            $(".shoot").find(":button").each((index, element) => {
-                $(element).click(() => { this.shoot(parseInt($(element).val())) });
-            });
-        }
+        var buttons = $("#ActionButtons");
+        $("#ActionButtons").html(this._actionTemplate(this));
+        $(".move").find(":button").each((index, element) => {
+            $(element).click(() => { this.move(parseInt($(element).val())) });
+        });
+        $(".shoot").find(":button").each((index, element) => {
+            $(element).click(() => { this.shoot(parseInt($(element).val())) });
+        });
+        $(".new").find(":button").each((index, element) => {
+            $(element).click(() => { this.initialise(false); });
+        });
     }
 
     private renderNarrations() {
         var text: string = '';
-        if (!this._started) {
+        if (this._newGame) {
             text += this.createLine("HUNT THE WUMPUS");
-            this._started = true;
         }
         if (!this._player.isAlive) {
             text += "HA HA HA - YOU LOSE!";
