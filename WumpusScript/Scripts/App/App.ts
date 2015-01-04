@@ -4,7 +4,6 @@
 import Player = require("../Model/Player")
 import Cave = require("../Model/Cave")
 import Hazards = require("../Model/Hazards")
-import Random = require("../Model/Random")
 import GameEvents = require("../Model/GameEvents")
 
 class Game {
@@ -25,7 +24,7 @@ class Game {
         var cave = new Cave();
         cave.shuffle();
 
-        var player = new Player(cave, Random.between(0, cave.rooms.length - 1));
+        var player = new Player(cave, _.random(0, cave.rooms.length - 1));
         player.addEncounter(Hazards.HazardType.Bat, player.encounterBat);
         player.addEncounter(Hazards.HazardType.Pit, player.encounterPit);
         player.addEncounter(Hazards.HazardType.Wumpus, player.startleWumpus);

@@ -2,7 +2,6 @@
 
 import Room = require("./Room")
 import Hazards = require("./Hazards")
-import Random = require("./Random")
 
 class Cave {
     private _rooms: Room[];
@@ -53,7 +52,7 @@ class Cave {
     private addHazard(type: Hazards.HazardType) {
         var roomNumber: number;
         do {
-            roomNumber = Random.between(0, this.rooms.length - 1);
+            roomNumber = _.random(0, this.rooms.length - 1);
         }
         while (this._rooms[roomNumber].containsHazard)
 

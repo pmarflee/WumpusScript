@@ -3,7 +3,6 @@
 import Cave = require("./Cave")
 import Room = require("./Room")
 import Player = require("./Player")
-import Random = require("./Random")
 
 export enum HazardType { Pit = 1, Bat = 2, Wumpus = 3 } 
 export enum ActionResult { None = 0, Moved = 1 }
@@ -81,7 +80,7 @@ export class Bat extends Hazard {
     defaultRoomSelector = (): number => {
         var room = this._room;
         var rooms = this._cave.rooms.length;
-        return (room.number + Random.between(1, rooms - 1)) % rooms;
+        return (room.number + _.random(1, rooms - 1)) % rooms;
     }
 }
 
@@ -117,7 +116,7 @@ export class Wumpus extends Hazard {
     }
 
     defaultRoomSelector = (): number => {
-        var exit = Random.between(0, 2);
+        var exit = _.random(0, 2);
         return this._room.exits[exit];
     }
 

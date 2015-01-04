@@ -3,7 +3,6 @@
 import Cave = require("./Cave")
 import Room = require("./Room")
 import Hazards = require("./Hazards")
-import Random = require("./Random")
 import Events = require("./Events")
 import GameEvents = require("./GameEvents")
 
