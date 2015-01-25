@@ -1,0 +1,48 @@
+﻿html,
+body {
+	margin: 50px;
+	padding: 0;
+}
+
+body {
+	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 1.4em;
+	background: #eeeeee;
+	color: #333333;
+	width: 80%;
+	margin: 0 auto;
+	-webkit-font-smoothing: antialiased;
+}
+
+#Title {
+    width: 100%;
+    text-align: center;
+}
+
+#Narrator {
+    overflow-y: auto; 
+    margin-left: 10px;
+    border: solid;
+}
+
+#Buttons {
+    clear: both;
+}
+
+.outer {
+    width: 100%;
+    text-align: center;
+}
+
+.inner {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.narrationtext {
+    margin: 10px;
+}
+
+hr {
+    width: 50%;
+}
