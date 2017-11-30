@@ -137,7 +137,7 @@ export class PlayerMovementTests extends tsUnit.TestClass {
     }
 
     "Should not be able to enter a room which is not accessible from their current room"() {
-        this.throws(() => this._player.enter(1));
+        this.throws(() => this._player.enter(5));
     }
 
     "Should be killed by entering a room containing a pit"() {
@@ -251,10 +251,7 @@ export class PlayerShootArrowTests extends tsUnit.TestClass {
     }
 
     "Should not be allowed to shoot an arrow into a non-adjoining room"() {
-        this.throws({
-            fn: () => this._player.shoot(2),
-            exceptionString: "Cannot access this room. Rooms accessible are 1,4,7"
-        });
+        this.throws(() => this._player.shoot(2), "Cannot access this room. Rooms accessible are 1,4,7");
     }
 
     "Should not kill wumpus if they do not shoot an arrow into its room"() {
@@ -303,7 +300,7 @@ export class EventTests extends tsUnit.TestClass {
     }
 
     "Player should raise an FellIntoPit event when they fall into a pit"() {
-        this.runTest(() => {
+        this._runTest(() => {
             this._player.addEncounter(Hazards.HazardType.Pit, this._player.encounterPit);
             Hazards.Hazard.create(Hazards.HazardType.Pit, this._cave, 1);
             this._player.move(1);
@@ -311,7 +308,7 @@ export class EventTests extends tsUnit.TestClass {
     }
 
     "Player should raise an WhiskedAwayByBats event when they encounter a bat"() {
-        this.runTest(() => {
+        this._runTest(() => {
             this._player.addEncounter(Hazards.HazardType.Bat, this._player.encounterBat);
             Hazards.Hazard.create(Hazards.HazardType.Bat, this._cave, 1);
             this._player.move(1);
@@ -319,7 +316,7 @@ export class EventTests extends tsUnit.TestClass {
     }
 
     "Player should raise a StartledWumpus event when they miss the wumpus and cause it to move rooms"() {
-        this.runTest(() => {
+        this._runTest(() => {
             this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
             var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move], () => 0);
             this._player.shoot(4);
@@ -327,7 +324,7 @@ export class EventTests extends tsUnit.TestClass {
     }
 
     "Player should raise a StartledWumpus event when they enter the room occupied by the wumpus and cause it to move rooms"() {
-        this.runTest(() => {
+        this._runTest(() => {
             this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
             var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Move], () => 0);
             this._player.enter(1);
@@ -335,14 +332,14 @@ export class EventTests extends tsUnit.TestClass {
     }
 
     "Player should raise a EatenByWumpus event when they are eaten by the wumpus"() {
-        this.runTest(() => {
+        this._runTest(() => {
             this._player.addEncounter(Hazards.HazardType.Wumpus, this._player.startleWumpus);
             var wumpus = new Hazards.Wumpus(this._cave, 1, [Hazards.WumpusAction.Stay]);
             this._player.enter(1);
         }, GameEvents.Type.EatenByWumpus);
     }
 
-    runTest(action: { (): void }, type: GameEvents.Type) {
+    _runTest(action: () => void, type: GameEvents.Type) {
         this._player.gameEvent.on(type => this._events.push(type));
         action();
         this.isTrue(this._events.indexOf(type) != -1);
